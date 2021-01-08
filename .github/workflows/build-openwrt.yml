@@ -27,8 +27,8 @@ on:
 
 
 #定时触发开始编译(开启定时编译请先确认SSH处在关闭状态,要不然SSH没人管,会卡SSH编译失败)
-#  schedule:
-#    - cron: 0 8 */5 * *
+  schedule:
+    - cron: 00 17 * * *
 
 
 #点☆Star触发开始编译
@@ -42,7 +42,7 @@ env:
   TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
   TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
   TZ: Asia/Shanghai
-  GITHUB_RELEASE: https://github.com/281677160/build-openwrt/releases
+  GITHUB_RELEASE: https://github.com/xiaobailong6/Auto-OpenwrtNO11/releases
 
 jobs: 
   build:
@@ -192,24 +192,24 @@ jobs:
         name: OpenWrt_bin_${{matrix.target}}_${{ env.date }}
         path: openwrt/bin
 
-    - name: 编译N1机型时,打包n1、vplus、beikeyun、l1pro、s905x3固件
-      run: |
-        if [ ${{matrix.target}} = Lede_phicomm_n1 -o ${{matrix.target}} = Project_phicomm_n1 ];then
-         cp openwrt/bin/targets/armvirt/*/*.tar.gz reform/openwrt
-         cd reform
-         sudo ./gen_openwrt -d -k latest
-         devices=("phicomm-n1" "vplus" "beikeyun" "l1pro" "s905x3")
-         cd out
-         for x in ${devices[*]}; do
-           cd $x
-           filename=$(ls | awk -F '.img' '{print $1}')
-           gzip *.img
-           cd ../
-           echo "firmware_$x=$filename" >> $GITHUB_ENV
-         done
-           cd ../../
-           mv -f reform/out/*/*.img.gz openwrt/bin/targets/armvirt/*
-        fi
+    #- name: 编译N1机型时,打包n1、vplus、beikeyun、l1pro、s905x3固件
+    #  run: |
+    #    if [ ${{matrix.target}} = Lede_phicomm_n1 -o ${{matrix.target}} = Project_phicomm_n1 ];then
+    #     cp openwrt/bin/targets/armvirt/*/*.tar.gz reform/openwrt
+    #     cd reform
+    #     sudo ./gen_openwrt -d -k latest
+    #     devices=("phicomm-n1" "vplus" "beikeyun" "l1pro" "s905x3")
+    #     cd out
+    #     for x in ${devices[*]}; do
+    #       cd $x
+    #       filename=$(ls | awk -F '.img' '{print $1}')
+    #       gzip *.img
+    #       cd ../
+    #       echo "firmware_$x=$filename" >> $GITHUB_ENV
+    #     done
+    #       cd ../../
+    #       mv -f reform/out/*/*.img.gz openwrt/bin/targets/armvirt/*
+    #    fi
     
     - name: 整理固件文件夹
       id: organizer
@@ -279,11 +279,11 @@ jobs:
             
             🎉 [ ${{ env.WXFB_MESSAGE }} ]固件下载 ✨
             
-            💐 奶牛快传(国内高速🚀下载)： ${{ env.COWTRANSFER_URL }}
+          #  💐 奶牛快传(国内高速🚀下载)： ${{ env.COWTRANSFER_URL }}
             
-            ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
+          #  ⛄ WeTransfer(国外高速🚀下载)： ${{ env.WETRANSFER_URL }}
             
-            🌴 链接有效期为7天，无需注册直接下载 🐤
+          #  🌴 链接有效期为7天，无需注册直接下载 🐤
         files: ${{ env.FIRMWARE }}/*
     
     - name: 微信通知
